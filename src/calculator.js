@@ -6,6 +6,9 @@
 // - subtract: subtraction (subtract one number from another)
 // - multiply: multiplication (multiply two or more numbers)
 // - divide: division (divide one number by another; division by zero is handled)
+// - mod: modulo (remainder)
+// - pow: exponentiation (base ** exponent)
+// - sqrt: square root (with error for negative input)
 
 function parseNumbers(args) {
   return args.map((a) => {
@@ -47,6 +50,24 @@ function divide(a, b) {
   return x / y;
 }
 
+// New functions requested
+function modulo(a, b) {
+  const [x, y] = ensureNumbers([a, b]);
+  if (y === 0) throw new Error('Modulo by zero');
+  return x % y;
+}
+
+function power(base, exponent) {
+  const [b, e] = ensureNumbers([base, exponent]);
+  return Math.pow(b, e);
+}
+
+function squareRoot(n) {
+  const [x] = ensureNumbers([n]);
+  if (x < 0) throw new Error('Cannot take square root of a negative number');
+  return Math.sqrt(x);
+}
+
 // CLI entry
 if (require.main === module) {
   const [, , cmd, ...rest] = process.argv;
@@ -80,6 +101,28 @@ if (require.main === module) {
         result = divide(a, b);
         break;
       }
+      case 'mod':
+      case 'modulo': {
+        if (rest.length < 2) throw new Error('mod requires two numbers');
+        const [a, b] = parseNumbers(rest.slice(0, 2));
+        result = modulo(a, b);
+        break;
+      }
+      case 'pow':
+      case 'power': {
+        if (rest.length < 2) throw new Error('pow requires two numbers');
+        const [a, b] = parseNumbers(rest.slice(0, 2));
+        result = power(a, b);
+        break;
+      }
+      case 'sqrt':
+      case 'squareRoot':
+      case 'square-root': {
+        if (rest.length < 1) throw new Error('sqrt requires one number');
+        const [a] = parseNumbers(rest.slice(0, 1));
+        result = squareRoot(a);
+        break;
+      }
       default:
         throw new Error(`Unknown operation: ${cmd}`);
     }
@@ -97,4 +140,4 @@ if (require.main === module) {
 }
 
 // Export functions for programmatic use / testing
-module.exports = { add, subtract, multiply, divide };
+module.exports = { add, subtract, multiply, divide, modulo, power, squareRoot };
