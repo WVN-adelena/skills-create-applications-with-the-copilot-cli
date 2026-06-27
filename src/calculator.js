@@ -17,21 +17,34 @@ function parseNumbers(args) {
   });
 }
 
+function ensureNumbers(arr) {
+  const nums = arr.map((v) => {
+    const n = Number(v);
+    if (Number.isNaN(n)) throw new Error(`Invalid number: ${v}`);
+    return n;
+  });
+  return nums;
+}
+
 function add(...nums) {
-  return nums.reduce((s, n) => s + n, 0);
+  const values = ensureNumbers(nums);
+  return values.reduce((s, n) => s + n, 0);
 }
 
 function subtract(a, b) {
-  return a - b;
+  const [x, y] = ensureNumbers([a, b]);
+  return x - y;
 }
 
 function multiply(...nums) {
-  return nums.reduce((p, n) => p * n, nums.length ? 1 : 0);
+  const values = ensureNumbers(nums);
+  return values.reduce((p, n) => p * n, values.length ? 1 : 0);
 }
 
 function divide(a, b) {
-  if (b === 0) throw new Error('Division by zero');
-  return a / b;
+  const [x, y] = ensureNumbers([a, b]);
+  if (y === 0) throw new Error('Division by zero');
+  return x / y;
 }
 
 // CLI entry
